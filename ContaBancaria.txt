@@ -1,0 +1,244 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX 500
+struct Cliente
+{
+    char nome[256];
+    int cpf;
+};
+
+struct Cliente cliente;
+
+struct Conta
+{
+    int    numero_da_conta;
+    struct Cliente cliente;
+    float  saldo;
+};
+
+struct Conta conta;
+
+void menu();
+void cadastrarCliente();
+void criarconta();
+void checarSaldo();
+void depositar();
+void sacar();
+void extrato();
+
+int main()
+{
+    printf("Bom dia! \n");
+    menu();
+    return 0;
+}
+
+void menu()
+{
+    int opcao;
+    printf(" 1 - Cadastrar Cliente. \n");
+    printf(" 2 - Criar Conta. \n");
+    printf(" 3 - Checar Saldo. \n");
+    printf(" 4 - Fazer Deposito. \n");
+    printf(" 5 - Fazer Saque. \n");
+    printf(" 6 - Extrato. \n");
+    printf(" 7 - Sair. \n");
+    printf("Selecione a operacao desejada: ");
+    scanf("%d",&opcao);
+
+    switch(opcao)
+    {
+        case 1:
+        cadastrarCliente();
+        break;
+        case 2:
+        criarconta();
+        break;
+        case 3:
+        checarSaldo();
+        break;
+        case 4:
+        depositar();
+        break;
+        case 5:
+        sacar();
+        break;
+        case 6:
+        extrato();
+        break;
+        case 7:
+            printf(" Obrigado pela preferencia. \n");
+        break;
+        default:
+            printf(" Escolha uma opção valida! \n");
+            menu();
+        break;
+        }
+    }
+
+
+void cadastrarCliente()
+{
+    printf("Digite seu CPF: \n");
+    scanf("%d", &cliente.cpf);
+    fflush(stdin);
+    printf("Insira seu nome completo: \n");
+    fgets(cliente.nome,256,stdin);
+    printf("Cadastro realizado com sucesso! \n");
+    printf("%s", cliente.nome);
+    printf("%d", cliente.cpf);
+    _sleep(3000);
+    system ("cls");
+    menu();
+}
+
+void criarconta()
+{
+    int cpfcheck;
+    int i = 100;
+    printf("insira o CPF do dono da conta: ");
+    scanf("%d",&cpfcheck);
+    if(cpfcheck == cliente.cpf)
+    {
+        conta.numero_da_conta = i + 1;
+        conta.saldo = 0;
+        printf("Conta criada com sucesso \n");
+        printf("Responsavel pela conta: %s \n", cliente.nome);
+        printf("CPF: %d \n", cliente.cpf);
+        printf("Numero da conta: %d \n", conta.numero_da_conta);
+        printf("Saldo Atual: %f \n", conta.saldo);
+    }
+    else
+    {
+        printf("Cliente não cadastrado! \n");
+    }
+    _sleep(5000);
+    system ("cls");
+    menu();
+}
+
+void checarSaldo()
+{
+    int ncontateste;
+    int cpfteste;
+    printf("digite o numero da conta: \n");
+    scanf("%d",&ncontateste);
+    if(ncontateste == conta.numero_da_conta)
+    {
+        printf("digite o CPF do responsavel: \n");
+        scanf("%d",&cpfteste);
+        if(cpfteste == cliente.cpf)
+        {
+            printf("Conta %d: \n", conta.numero_da_conta);
+            printf("Saldo Atual: %.2f \n", conta.saldo);
+        }
+        else
+        {
+            printf("CPF invalido! \n");
+        }
+    }
+    else
+    {
+        printf("Conta não existente! \n");
+    }
+    _sleep(5000);
+    system ("cls");
+    menu();
+}
+
+void depositar()
+{
+
+    int ncontateste;
+    int cpfteste;
+    float deposito;
+    printf("digite o numero da conta: \n");
+    scanf("%d",&ncontateste);
+    if(ncontateste == conta.numero_da_conta)
+    {
+        printf("digite o CPF do responsavel: \n");
+        scanf("%d",&cpfteste);
+        if(cpfteste == cliente.cpf)
+        {
+            printf("Quanto deseja depositar? \n");
+            scanf("%f", &deposito);
+            conta.saldo = conta.saldo + deposito;
+            printf("Deposito realizado com sucesso! \n");
+            printf("Novo saldo: %f", conta.saldo);
+            FILE * pont_arq;
+            pont_arq = fopen("resultado.txt", "a");
+            fprintf(pont_arq, "Deposito no valor de R$ %.2f\n   Saldo de R% %.2f\n", deposito, conta.saldo);
+            fclose(pont_arq);
+    }
+
+        else
+        {
+            printf("CPF invalido! \n");
+        }
+    }
+    else
+    {
+        printf("Conta nao existente! \n");
+    }
+    _sleep(5000);
+    system ("cls");
+    menu();
+}
+
+void sacar()
+{
+    int ncontateste, cpfteste;
+    float valorS;
+    printf("digite o numero da conta: \n");
+    scanf("%d",&ncontateste);
+    if(ncontateste == conta.numero_da_conta)
+    {
+        printf("digite o CPF do responsavel: \n");
+        scanf("%d",&cpfteste);
+        if(cpfteste == cliente.cpf)
+        {
+            if(conta.saldo <= 0)
+            {
+                printf("Sem saldo na conta, Nao eh Possivel realizar o Saque\n");
+                _sleep(3000);
+                system("cls");
+                menu();
+            }
+            printf("Digite a quantidade que deseja Sacar: \n");
+            scanf("%f", &valorS);
+            if(valorS > conta.saldo)
+            {
+                printf("Saldo Insuficiente\n");
+            }
+            else
+            {
+                printf("Saque realizado no Valor de R$ %2.f\n", valorS);
+                conta.saldo = conta.saldo - valorS;
+                printf("Novo saldo %.2f\n\n", conta.saldo);
+                FILE * pont_arq;
+                pont_arq = fopen("resultado.txt", "a");
+                fprintf(pont_arq, "Saque no Valor de R$ %.2f \nSaldo de R$ %.2f\n", valorS, conta.saldo);
+                fclose(pont_arq);
+            }
+        }
+        else
+        {
+            printf("CPF invalido! \n");
+        }
+    }
+    else
+    {
+        printf("Conta não existente! \n");
+    }
+    _sleep(5000);
+    system ("cls");
+    menu();
+}
+void extrato(){
+    char ch;
+    FILE *pont_arq = fopen("resultado.txt", "r");
+    while((ch=fgetc(pont_arq))!=EOF){
+        putchar(ch);
+}
+
+}
